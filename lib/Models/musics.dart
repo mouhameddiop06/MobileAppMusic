@@ -3,4 +3,4 @@ class Music {
     
   Music(this.artistName,this.title, this.albumTitle,this.preview,this.imageMusic);
 
-}
+} 
