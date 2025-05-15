@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_rema_app/app.dart';
 void main() async {
   
-  runApp(MaterialApp(
+  runApp(MaterialApp(  
     home:App()
   ));
   
