@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:music_rema_app/Models/musics.dart';
+import 'package:music_rema_app/Screens/Music_details.dart';
 
 class App extends StatelessWidget {
   const App();
@@ -30,7 +31,7 @@ class App extends StatelessWidget {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, position) {
-                return oneRowMusic(snapshot.data![position]);
+                return oneRowMusic(context, snapshot.data![position]);
               },
             );
           } else {
@@ -41,20 +42,48 @@ class App extends StatelessWidget {
     );
   }
 
-  Widget oneRowMusic(Music music) {
+  Widget oneRowMusic(BuildContext context, Music music) {
     return GestureDetector(
       onTap: () {
-        //print("Hello");
-        debugPrint("Hello");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MusicDetailsScreen(music: music),
+          ),
+        );
       },
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(music.imageMusic),
-          radius: 80,
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        elevation: 3,
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(8),
+          leading: Hero(
+            tag: music.preview,
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(music.imageMusic),
+              radius: 30,
+            ),
+          ),
+          title: Text(
+            music.title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(music.artistName),
+              Text(
+                music.albumTitle,
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+            ],
+          ),
+          trailing: const Icon(
+            Icons.play_arrow,
+            color: Color.fromARGB(255, 17, 116, 26),
+            size: 30,
+          ),
         ),
-        title: Text(music.title),
-        subtitle: Text(music.albumTitle),
-        trailing: Icon(Icons.play_arrow),
       ),
     );
   }
@@ -88,105 +117,4 @@ class App extends StatelessWidget {
     }
     return allMusic;
   }
-} 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'dart:convert';
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter_spinkit/flutter_spinkit.dart';
-// import 'package:http/http.dart' as http;
-
-// class App extends StatelessWidget {
-//   const App() ;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: FutureBuilder(
-//         future: getMusic(),
-//         builder:(context,snapshot){// snapshot juste nom d'une variable 
-//           if (snapshot.connectionState == ConnectionState.waiting)
-//           {
-//             return Center(
-//               child: SpinKitCircle(
-//                       color: const Color.fromARGB(255, 17, 116, 26),
-//                       size: 100.0,
-//                     ),
-//             );
-//           }
-//           else if(snapshot.hasError){
-//             return Center(
-//               child: Text("${snapshot.error}"),
-//             );
-//           }
-//           else {
-//             return Text("${snapshot.data}");
-//           }
-
-//           // else {
-//           //   List<String> titres = snapshot.data as List<String>;
-//           //   return ListView.builder(
-//           //     itemCount: titres.length,
-//           //     itemBuilder: (context, index) {
-//           //       return ListTile(
-//           //         title: Text(titres[index]),
-//           //       );
-//           //     },
-//           //   );
-//           // }
-
-//         }
-//       ),
-//     );
-//   }
-
-//    Future<String> getMusic() async {
-//      var response = await http.get(
-//     Uri.parse(
-//       "https://api.deezer.com/search?q=dipdoundeguiss"
-//     ));
-
-//     var responseJSON = jsonDecode(response.body);
-//     var nomArtiste = responseJSON["data"][12]["artist"]["name"];
-//     var nomSon = responseJSON ["data"][12]["title"];
-//     var nomAlbum = responseJSON ["data"][12]["album"]["title"];
-
-//   return "Artiste: $nomArtiste\nSon: $nomSon\nAlbum: $nomAlbum";
-//   }
-
-//   // Future<List<String>> getMusic() async {
-//   //   var response = await http.get(
-//   //     Uri.parse("https://api.deezer.com/search?q=dipdoundeguiss"),
-//   //   );
-
-//   //   if (response.statusCode != 200) {
-//   //     throw Exception('Erreur de chargement : ${response.statusCode}');
-//   //   }
-
-//   //   var responseJSON = jsonDecode(response.body);
-//   //   List<dynamic> tracks = responseJSON["data"];
-
-//   //   List<String> titres = [];
-//   //   for (int i = 0; i < tracks.length; i++) {
-//   //     String titre = tracks[i]["title"];
-//   //     titres.add("[$i] $titre");
-//   //   }
-
-//   //   return titres;
-//   // }
-
-// }
+}
